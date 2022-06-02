@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+
+  postgres_db:
+    image: postgres
+    environment:   # Set up postgres database name and password
+      POSTGRES_PASSWORD: passwordDEV
+      POSTGRES_DB: harrypotterDEV
+      POSTGRES_USER: postgres  
+    networks:
+      - app-tier
+
+  python_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:   # Set up postgres database name and password
+      POSTGRES_PASSWORD: passwordDEV
+      POSTGRES_DB: harrypotterDEV
+      POSTGRES_USER: postgres 
+    depends_on:
+      - postgres_db
+    networks:
+      - app-tier
+#keep all configurations in the same compose file, and exec commands on the python_app container
+    command:
+      tail -f /dev/null
+
+networks:
+  app-tier:
+    driver: bridge 
